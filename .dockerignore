@@ -1,0 +1,34 @@
+# Version control
+.git/
+.github/
+
+# Virtual environments
+myvenv/
+venv/
+.venv/
+env/
+
+# Model weights — downloaded at runtime from HuggingFace
+*.keras
+models/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Dev-only files
+requirements-dev.txt
+tests/
+notebooks/
+*.ipynb
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.env

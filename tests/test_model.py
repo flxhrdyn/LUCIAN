@@ -9,7 +9,8 @@ from PIL import Image
 # Skip entire module gracefully if TensorFlow is not installed.
 pytest.importorskip("tensorflow", reason="TensorFlow not installed in this environment")
 
-# Patch st.cache_resource before importing src.model so the decorator is a no-op.
+# Patch st.cache_resource before importing src.model so the decorator becomes a
+# no-op — otherwise Streamlit tries to manage state and breaks in a test context.
 with patch("streamlit.cache_resource", lambda **_: lambda fn: fn):
     from src.model import _MAX_FILE_SIZE_MB, preprocess_image, predict
 from src.config import IMAGE_SIZE

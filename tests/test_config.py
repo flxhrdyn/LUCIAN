@@ -17,7 +17,7 @@ from src.config import (
     MODEL_URL,
 )
 
-NUM_CLASSES = 3
+NUM_CLASSES = 3  # must match len(CLASS_LABELS_EN), CLASS_LABELS_ID, and CLASS_COLORS
 
 
 class TestBasicConstants:

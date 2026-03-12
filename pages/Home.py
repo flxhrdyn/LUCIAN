@@ -1,6 +1,10 @@
+"""Home page — warms up the model and renders the landing hero banner."""
 import os
 import sys
 from pathlib import Path
+
+# Streamlit runs page files outside the project root; this keeps 'from src...'
+# imports working regardless of which directory the process was started from.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import streamlit as st
@@ -12,6 +16,8 @@ from src.styles import apply_css, render_footer, render_sidebar_info
 apply_css()
 render_sidebar_info()
 
+# Show a spinner only if the model file is absent — first-time visitors will
+# see a download progress message; everyone else gets instant load from cache.
 model_needs_loading = not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) == 0
 if model_needs_loading:
     with st.spinner("Downloading & loading ConvNeXt model..."):

@@ -61,12 +61,12 @@ def compute_gradcam(
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))  # (C,)
 
     conv_map = conv_outputs[0]                             # (H, W, C)
-    heatmap  = conv_map @ pooled_grads[..., tf.newaxis]   # (H, W, 1)
+    heatmap  = conv_map @ pooled_grads[..., tf.newaxis]   # (H, W, 1) — channels weighted by gradient magnitude
     heatmap  = tf.squeeze(heatmap)                        # (H, W)
 
     # ReLU + normalize to [0, 1]
     heatmap = tf.maximum(heatmap, 0)
-    heatmap = heatmap / (tf.math.reduce_max(heatmap) + 1e-8)
+    heatmap = heatmap / (tf.math.reduce_max(heatmap) + 1e-8)  # epsilon guards against blank/uniform images
     return heatmap.numpy()
 
 

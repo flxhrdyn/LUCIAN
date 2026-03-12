@@ -1,3 +1,8 @@
+"""Centralised constants for the LUCIAN app.
+
+Keeping paths, labels, and URLs here means a single edit propagates everywhere
+— no need to hunt down hardcoded strings across multiple page files.
+"""
 from pathlib import Path
 
 # Project root (one level above this file)

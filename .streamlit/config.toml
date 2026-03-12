@@ -7,3 +7,4 @@ font = "sans serif"
 
 [server]
 maxUploadSize = 10
+headless = true          # suppresses browser auto-open (required for Docker / cloud)

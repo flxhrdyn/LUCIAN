@@ -1,3 +1,8 @@
+"""CSS injection and shared UI components (sidebar info, footer) for all pages.
+
+All CSS lives in the _CSS string so edits stay in one place instead of being
+scattered across individual page files.
+"""
 import streamlit as st
 
 _CSS = """

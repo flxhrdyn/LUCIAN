@@ -19,6 +19,7 @@ _MAX_FILE_SIZE_MB = 10
 @st.cache_resource(show_spinner=False)
 def load_model():
     """Load the ConvNeXt model, downloading from HuggingFace if not cached locally."""
+    # size == 0 catches a previous aborted download that left a 0-byte file
     if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) == 0:
         logger.info("Model not found locally — downloading from HuggingFace Hub.")
         _download_model()
@@ -39,12 +40,13 @@ def _download_model() -> None:
     tmp_path = MODEL_PATH + ".tmp"
     logger.info("Downloading model from %s", MODEL_URL)
     try:
+        # 120s timeout — the model is ~420 MB, slow connections need the headroom
         with requests.get(MODEL_URL, stream=True, timeout=120) as r:
             r.raise_for_status()
             total = int(r.headers.get("content-length", 0))
             downloaded = 0
             with open(tmp_path, "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):
+                for chunk in r.iter_content(chunk_size=8192):  # 8 KB keeps memory flat
                     f.write(chunk)
                     downloaded += len(chunk)
             if total:
@@ -76,6 +78,7 @@ def preprocess_image(uploaded_file):
     except UnidentifiedImageError as exc:
         raise ValueError("File yang diunggah bukan gambar yang valid.") from exc
 
+    # scale to [0, 1] floats, add batch axis → shape (1, 224, 224, 3)
     arr = np.expand_dims(np.array(img) / 255.0, axis=0).astype(np.float32)
     return img, arr
 

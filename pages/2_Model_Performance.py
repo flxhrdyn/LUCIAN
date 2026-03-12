@@ -1,3 +1,4 @@
+"""Model performance page — training curves, classification report, and confusion matrix."""
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -13,6 +14,7 @@ from src.styles import apply_css, render_footer, render_sidebar_info
 
 @st.cache_data(show_spinner=False)
 def _img(path: str) -> bytes:
+    # Cached so repeated expander opens don't re-read from disk.
     with open(path, "rb") as f:
         return f.read()
 

@@ -1,3 +1,4 @@
+"""Clinical background page — descriptions and sample images for each tissue class."""
 import base64
 import sys
 from pathlib import Path
@@ -11,6 +12,8 @@ from src.styles import apply_css, render_footer, render_sidebar_info
 
 @st.cache_data(show_spinner=False)
 def _b64(path: str) -> str:
+    # Images are embedded as base64 data URIs so they display inside raw HTML
+    # blocks (st.markdown unsafe_allow_html) — st.image can't be used there.
     with open(path, "rb") as f:
         data = f.read()
     ext = Path(path).suffix.lstrip(".")

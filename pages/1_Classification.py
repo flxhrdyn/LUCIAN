@@ -1,5 +1,8 @@
+"""Classification page — image upload, real-time inference, and Grad-CAM display."""
 import sys
 from pathlib import Path
+
+# Same sys.path fix as other page files — see pages/Home.py for explanation.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import numpy as np
@@ -92,6 +95,8 @@ with col_info:
 if uploaded_file:
     _run_inference(uploaded_file)
 
+# session_state persists results across reruns — without this, Streamlit would
+# clear the prediction every time the user interacts with anything on the page.
 if "predicted_idx" in st.session_state:
     idx = st.session_state["predicted_idx"]
     probs = st.session_state["probs"]
@@ -130,6 +135,7 @@ if "predicted_idx" in st.session_state:
         for label, prob in zip(CLASS_LABELS_EN, probs):
             st.progress(float(prob), text=f"{label}: {prob*100:.2f}%")
 
+        # below 70% confidence the prediction is too uncertain to be useful
         if probs[idx] < 0.70:
             st.warning(
                 "⚠️ **Low confidence** — The model is less than 70% certain. "
