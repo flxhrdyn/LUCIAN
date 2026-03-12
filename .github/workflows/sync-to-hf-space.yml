@@ -35,4 +35,6 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           git remote add hf-space "https://felixhrdyn:${HF_TOKEN}@huggingface.co/spaces/felixhrdyn/LUCIAN"
-          git push hf-space HEAD:main
+          # Prefer normal push for cleaner history; fallback to force only when
+          # the remote contains unrelated/initial commits (common on new Spaces).
+          git push hf-space HEAD:main || git push --force hf-space HEAD:main
