@@ -1,6 +1,6 @@
 # 🔬 LUCIAN — Lung Carcinoma Histopathology Imaging & Analysis
 
-![CI](https://github.com/felixhrdyn/LUCIAN/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/flxhrdyn/LUCIAN/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.19-orange?logo=tensorflow)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.45-red?logo=streamlit)
