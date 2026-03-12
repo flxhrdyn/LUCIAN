@@ -12,9 +12,10 @@ from src.config import (
     CLASS_LABELS_ID,
     DEMO_IMAGES,
     GRADCAM_LAYER,
+    HF_FILENAME,
+    HF_REPO_ID,
     IMAGE_SIZE,
     MODEL_PATH,
-    MODEL_URL,
 )
 
 NUM_CLASSES = 3  # must match len(CLASS_LABELS_EN), CLASS_LABELS_ID, and CLASS_COLORS
@@ -49,8 +50,11 @@ class TestPaths:
     def test_model_path_ends_with_keras(self):
         assert MODEL_PATH.endswith(".keras")
 
-    def test_model_url_is_huggingface(self):
-        assert "huggingface.co" in MODEL_URL
+    def test_hf_repo_id_is_valid(self):
+        assert "/" in HF_REPO_ID, "repo_id must be in 'owner/repo' format"
+
+    def test_hf_filename_ends_with_keras(self):
+        assert HF_FILENAME.endswith(".keras")
 
     def test_assets_82_split_exists(self):
         assert Path(ASSETS_82_SPLIT).is_dir()
