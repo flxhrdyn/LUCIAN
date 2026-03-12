@@ -1,3 +1,13 @@
+---
+title: LUCIAN
+emoji: 🫁
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # 🔬 LUCIAN — Lung Carcinoma Histopathology Imaging & Analysis
 
 ![CI](https://github.com/flxhrdyn/LUCIAN/actions/workflows/ci.yml/badge.svg)
@@ -221,7 +231,7 @@ LUCIAN/
 ├── Dockerfile                   # Container definition for HF Spaces / Azure
 ├── .dockerignore                # Excludes venv, model weights, and dev files from image
 ├── requirements.txt             # Runtime dependencies
-└── readme.md
+└── README.md
 ```
 
 ---
