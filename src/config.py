@@ -9,9 +9,11 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Model configuration
-MODEL_URL = "https://huggingface.co/felixhrdyn/convnextv1-lung-cancer/resolve/main/convnext_lung_82.keras"
-MODEL_PATH = str(BASE_DIR / "convnext_lung_82.keras")
-IMAGE_SIZE = (224, 224)
+# repo_id and filename are passed to hf_hub_download() in model.py
+HF_REPO_ID  = "felixhrdyn/convnextv1-lung-cancer"
+HF_FILENAME = "convnext_lung_82.keras"
+MODEL_PATH  = str(BASE_DIR / "convnext_lung_82.keras")
+IMAGE_SIZE  = (224, 224)
 
 # Classification labels
 CLASS_LABELS_EN = ["Adenocarcinoma", "Benign Tissue", "Squamous Cell Carcinoma"]

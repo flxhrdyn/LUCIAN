@@ -4,12 +4,12 @@ import os
 import time
 
 import numpy as np
-import requests
 import streamlit as st
 import tensorflow as tf
+from huggingface_hub import hf_hub_download
 from PIL import Image, UnidentifiedImageError
 
-from src.config import IMAGE_SIZE, MODEL_PATH, MODEL_URL
+from src.config import HF_FILENAME, HF_REPO_ID, IMAGE_SIZE, MODEL_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -32,32 +32,20 @@ def load_model():
 
 
 def _download_model() -> None:
-    """Stream-download the model file from HuggingFace Hub.
+    """Download the model from HuggingFace Hub using the official SDK.
 
-    Uses a temp file + atomic rename so a failed/interrupted download never
-    leaves a corrupt file at MODEL_PATH.
+    hf_hub_download handles resumable downloads, caching, and progress
+    reporting automatically — replacing the manual requests.get() approach.
+    local_dir pins the file to the project folder instead of ~/.cache/huggingface,
+    so the app finds it at MODEL_PATH on all platforms including Docker.
     """
-    tmp_path = MODEL_PATH + ".tmp"
-    logger.info("Downloading model from %s", MODEL_URL)
-    try:
-        # 120s timeout — the model is ~420 MB, slow connections need the headroom
-        with requests.get(MODEL_URL, stream=True, timeout=120) as r:
-            r.raise_for_status()
-            total = int(r.headers.get("content-length", 0))
-            downloaded = 0
-            with open(tmp_path, "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):  # 8 KB keeps memory flat
-                    f.write(chunk)
-                    downloaded += len(chunk)
-            if total:
-                logger.info("Downloaded %.1f MB", downloaded / 1e6)
-        os.replace(tmp_path, MODEL_PATH)
-        logger.info("Model saved to %s", MODEL_PATH)
-    except Exception:
-        if os.path.exists(tmp_path):
-            os.remove(tmp_path)
-        logger.exception("Model download failed — temp file cleaned up.")
-        raise
+    logger.info("Downloading %s from repo %s", HF_FILENAME, HF_REPO_ID)
+    hf_hub_download(
+        repo_id=HF_REPO_ID,
+        filename=HF_FILENAME,
+        local_dir=os.path.dirname(MODEL_PATH),
+    )
+    logger.info("Model saved to %s", MODEL_PATH)
 
 
 def preprocess_image(uploaded_file):
