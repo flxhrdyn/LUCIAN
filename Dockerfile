@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies first (cached layer as long as requirements.txt unchanged)
+# tensorflow-cpu is used instead of tensorflow — no CUDA libs, ~1 GB smaller image,
+# and sufficient for inference on CPU-only hosts (Streamlit Cloud, HF Spaces, App Service B1).
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
