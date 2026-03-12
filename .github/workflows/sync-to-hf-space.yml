@@ -18,6 +18,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Ensure Git LFS is available
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v git-lfs >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y git-lfs
+          fi
+          git lfs version
+
       - name: Validate Hugging Face token
         run: |
           if [ -z "${{ secrets.HF_TOKEN }}" ]; then
@@ -33,8 +43,35 @@ jobs:
       - name: Push to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        shell: bash
         run: |
+          set -euo pipefail
+
+          # Hugging Face Hub rejects raw binary blobs pushed via plain Git.
+          # To keep GitHub history untouched while still syncing to Spaces,
+          # we publish a fresh "snapshot" repo where common binary assets
+          # (images, model artifacts) are tracked via Git-LFS.
+
+          SPACE_DIR="$(mktemp -d)"
+          git archive --format=tar HEAD | tar -x -C "${SPACE_DIR}"
+
+          pushd "${SPACE_DIR}" >/dev/null
+          git init -b main
+          git lfs install
+
+          # Track the most common binary types found in this repo.
+          git lfs track "*.jpg" "*.jpeg" "*.png" "*.gif" "*.webp" "*.bmp" \
+            "*.keras" "*.h5" "*.tflite" \
+            "*.onnx" "*.pt" "*.pth" "*.bin" \
+            "*.npz" "*.npy"
+
+          git add .gitattributes
+          git add .
+          git commit -m "Sync from GitHub (${GITHUB_SHA})"
+
           git remote add hf-space "https://felixhrdyn:${HF_TOKEN}@huggingface.co/spaces/felixhrdyn/LUCIAN"
+
           # Prefer normal push for cleaner history; fallback to force only when
           # the remote contains unrelated/initial commits (common on new Spaces).
-          git push hf-space HEAD:main || git push --force hf-space HEAD:main
+          git push hf-space main || git push --force hf-space main
+          popd >/dev/null

@@ -121,11 +121,31 @@ Open `http://localhost:7860` in your browser.
 
 1. Go to [huggingface.co/new-space](https://huggingface.co/new-space) and sign in
 2. Set **SDK: Docker**, visibility: Public
-3. Add the repo as a remote and push:
+3. Sync your code to the Space.
+
+> Note: the Hugging Face Hub rejects **raw binary blobs** pushed via plain Git.
+> Repos that include images (like this one) must use **Xet/LFS-backed storage**.
+> The simplest approach is the GitHub Actions sync described below.
+
+If you still want to push manually, use a “snapshot push” (exports the current
+tracked files and pushes them with Git-LFS enabled, without rewriting your
+GitHub history):
 
 ```bash
-git remote add hfspace https://huggingface.co/spaces/felixhrdyn/LUCIAN
-git push hfspace main
+SPACE_DIR="$(mktemp -d)"
+git archive --format=tar HEAD | tar -x -C "${SPACE_DIR}"
+
+cd "${SPACE_DIR}"
+git init -b main
+git lfs install
+git lfs track "*.jpg" "*.jpeg" "*.png" "*.gif" "*.webp" "*.bmp"
+
+git add .gitattributes
+git add .
+git commit -m "Deploy snapshot to HF Space"
+
+git remote add hfspace https://felixhrdyn:<HF_TOKEN>@huggingface.co/spaces/felixhrdyn/LUCIAN
+git push --force hfspace main
 ```
 
 HF Spaces reads the `Dockerfile`, builds the image, and serves the app on port 7860.
@@ -139,7 +159,7 @@ To keep GitHub as the single source of truth and auto-update your Space on every
   - Name: `HF_TOKEN`
   - Value: your Hugging Face write token
 3. Add workflow file: `.github/workflows/sync-to-hf-space.yml`
-4. Push to `main` — GitHub Actions will automatically push the same commit to your Space
+4. Push to `main` — GitHub Actions will publish a clean “snapshot” repo to your Space (with Git-LFS tracking for binary assets)
 
 Manual trigger is also supported via **Actions → Sync To Hugging Face Space → Run workflow**.
 
