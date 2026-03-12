@@ -12,12 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # repo_id and filename are passed to hf_hub_download() in model.py
 HF_REPO_ID  = "felixhrdyn/convnextv1-lung-cancer"
 HF_FILENAME = "convnext_lung_82.keras"
-MODEL_PATH  = str(BASE_DIR / "convnext_lung_82.keras")
+MODEL_PATH  = str(BASE_DIR / "models" / HF_FILENAME)
 IMAGE_SIZE  = (224, 224)
 
 # Classification labels
 CLASS_LABELS_EN = ["Adenocarcinoma", "Benign Tissue", "Squamous Cell Carcinoma"]
-CLASS_LABELS_ID = ["Adenokarsinoma Paru", "Jaringan Paru Jinak", "Karsinoma Sel Skuamosa Paru"]
+CLASS_LABELS_ID = ["Lung Adenocarcinoma", "Benign Lung Tissue", "Lung Squamous Cell Carcinoma"]
 CLASS_COLORS = ["#e74c3c", "#2ecc71", "#e67e22"]  # Red, Green, Orange
 
 # Grad-CAM configuration

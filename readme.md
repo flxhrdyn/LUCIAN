@@ -81,7 +81,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The app will open at `http://localhost:8501`. The model is loaded from the local `.keras` file on first run, or automatically downloaded from HuggingFace if not present. Download uses a **temp file + atomic rename** to prevent corrupt model files from failed downloads.
+The app will open at `http://localhost:8501`. The model is loaded from `models/convnext_lung_82.keras`, or automatically downloaded from HuggingFace on first run if not present.
 
 ### Run Tests
 
@@ -180,7 +180,7 @@ LUCIAN/
 ├── notebooks/
 │   ├── 01_training_80_10_10_split.ipynb   # Main training experiment (CRISP-DM)
 │   └── 02_training_70_15_15_split.ipynb   # Baseline experiment
-├── models/                      # Placeholder — model weights are gitignored
+├── models/                      # Local model artifact cache (convnext_lung_82.keras), gitignored
 ├── app.py                       # Streamlit entry point
 ├── Dockerfile                   # Container definition for HF Spaces / Azure
 ├── .dockerignore                # Excludes venv, model weights, and dev files from image

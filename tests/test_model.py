@@ -67,18 +67,18 @@ class TestPreprocessImageValid:
 class TestPreprocessImageErrors:
     def test_raises_on_corrupt_bytes(self):
         corrupt = io.BytesIO(b"this is not an image")
-        with pytest.raises(ValueError, match="bukan gambar yang valid"):
+        with pytest.raises(ValueError, match="not a valid image"):
             preprocess_image(corrupt)
 
     def test_raises_on_empty_bytes(self):
-        with pytest.raises(ValueError, match="bukan gambar yang valid"):
+        with pytest.raises(ValueError, match="not a valid image"):
             preprocess_image(io.BytesIO(b""))
 
     def test_raises_on_oversized_file(self):
         # Build in-memory bytes just over the limit.
         limit_bytes = int(_MAX_FILE_SIZE_MB * 1e6) + 1
         oversized = io.BytesIO(b"\x00" * limit_bytes)
-        with pytest.raises(ValueError, match="terlalu besar"):
+        with pytest.raises(ValueError, match="too large"):
             preprocess_image(oversized)
 
     def test_exact_limit_does_not_raise(self, fake_png_bytes):

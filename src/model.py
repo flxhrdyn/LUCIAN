@@ -39,6 +39,7 @@ def _download_model() -> None:
     local_dir pins the file to the project folder instead of ~/.cache/huggingface,
     so the app finds it at MODEL_PATH on all platforms including Docker.
     """
+    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
     logger.info("Downloading %s from repo %s", HF_FILENAME, HF_REPO_ID)
     hf_hub_download(
         repo_id=HF_REPO_ID,
@@ -59,12 +60,12 @@ def preprocess_image(uploaded_file):
     size_mb = len(raw) / 1e6
     if size_mb > _MAX_FILE_SIZE_MB:
         raise ValueError(
-            f"File terlalu besar ({size_mb:.1f} MB). Maksimum {_MAX_FILE_SIZE_MB} MB."
+            f"File is too large ({size_mb:.1f} MB). Maximum allowed size is {_MAX_FILE_SIZE_MB} MB."
         )
     try:
         img = Image.open(io.BytesIO(raw)).convert("RGB").resize(IMAGE_SIZE)
     except UnidentifiedImageError as exc:
-        raise ValueError("File yang diunggah bukan gambar yang valid.") from exc
+        raise ValueError("The uploaded file is not a valid image.") from exc
 
     # scale to [0, 1] floats, add batch axis → shape (1, 224, 224, 3)
     arr = np.expand_dims(np.array(img) / 255.0, axis=0).astype(np.float32)
