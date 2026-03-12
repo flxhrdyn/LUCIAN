@@ -1,0 +1,30 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.env
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+venv/
+.venv/
+myvenv/
+env/
+
+# ── Jupyter ────────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Model weights (large binary files — download via HuggingFace) ──────────────
+*.keras
+*.h5
+*.pt
+*.pth
+models/*
+!models/.gitkeep
+
+# ── Streamlit secrets ──────────────────────────────────────────────────────────
+.streamlit/secrets.toml
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
