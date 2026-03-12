@@ -34,12 +34,14 @@ Two data split experiments were conducted:
 
 | Metric | Split 80:10:10 (Final) | Split 70:15:15 |
 |--------|----------------------|----------------|
-| Train Accuracy | 96.08% | — |
-| Validation Accuracy | 96.67% | — |
+| Train Accuracy | 96.08% | 94.95% |
+| Validation Accuracy | 96.67% | 94.00% |
 | **Test Accuracy** | **93.67%** | **90.44%** |
 | Precision (macro) | 93.63% | 90.47% |
 | Recall (macro) | 93.67% | 90.44% |
 | F1-Score (macro) | 93.64% | 90.39% |
+
+For the 70:15:15 run, values are reported from the **best checkpoint epoch** selected by `ModelCheckpoint(monitor='val_accuracy', mode='max')`.
 
 ### Per-Class Performance (80:10:10 Split)
 

@@ -74,5 +74,6 @@ def preprocess_image(uploaded_file):
 def predict(model, img_array):
     """Run inference and return class probabilities with elapsed time."""
     start = time.time()
-    probs = model.predict(img_array, verbose=0)[0]
+    img_tensor = tf.convert_to_tensor(img_array, dtype=tf.float32)
+    probs = model(img_tensor, training=False).numpy()[0]
     return probs, time.time() - start

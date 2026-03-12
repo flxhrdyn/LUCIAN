@@ -1,4 +1,5 @@
 """Classification page — image upload, real-time inference, and Grad-CAM display."""
+import io
 import sys
 from pathlib import Path
 
@@ -63,6 +64,8 @@ demo_labels = [
 ]
 for col, (btn_label, key) in zip(demo_cols, demo_labels):
     if col.button(btn_label, use_container_width=True):
+        # Reset upload signature so a subsequent manual upload is treated as new.
+        st.session_state.pop("upload_signature", None)
         with open(DEMO_IMAGES[key], "rb") as f:
             _run_inference(f)
 
@@ -93,7 +96,13 @@ with col_info:
     """, unsafe_allow_html=True)
 
 if uploaded_file:
-    _run_inference(uploaded_file)
+    # Streamlit keeps uploaded_file across reruns; without this guard we would
+    # rerun inference on every interaction, causing extra latency and TF warnings.
+    payload = uploaded_file.getvalue()
+    signature = (uploaded_file.name, len(payload))
+    if st.session_state.get("upload_signature") != signature:
+        st.session_state["upload_signature"] = signature
+        _run_inference(io.BytesIO(payload))
 
 # session_state persists results across reruns — without this, Streamlit would
 # clear the prediction every time the user interacts with anything on the page.

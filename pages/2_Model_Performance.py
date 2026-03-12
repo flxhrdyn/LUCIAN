@@ -96,15 +96,23 @@ with st.expander("🔮 Sample Test Predictions"):
 # ── Split Comparison ──────────────────────────────────────────────────────────
 with st.expander("🔁 Data Split Strategy Comparison: 80:10:10 vs 70:15:15"):
     comp_data = {
-        "Metric": ["Test Accuracy", "Precision (macro)", "Recall (macro)", "F1-Score (macro)"],
-        "80:10:10 (Final)": ["93.67%", "93.63%", "93.67%", "93.64%"],
-        "70:15:15 (Baseline)": ["90.44%", "90.47%", "90.44%", "90.39%"],
-        "Improvement": ["+3.23%", "+3.16%", "+3.23%", "+3.25%"],
+        "Metric": [
+            "Train Accuracy",
+            "Validation Accuracy",
+            "Test Accuracy",
+            "Precision (macro)",
+            "Recall (macro)",
+            "F1-Score (macro)",
+        ],
+        "80:10:10 (Final)": ["96.08%", "96.67%", "93.67%", "93.63%", "93.67%", "93.64%"],
+        "70:15:15 (Baseline)": ["94.95%", "94.00%", "90.44%", "90.47%", "90.44%", "90.39%"],
+        "Improvement": ["+1.13%", "+2.67%", "+3.23%", "+3.16%", "+3.23%", "+3.25%"],
     }
     st.table(pd.DataFrame(comp_data).set_index("Metric"))
     st.info(
         "The **80:10:10 split** provides 14% more training data (2,400 vs 2,100 images), "
-        "resulting in a consistent ~+3% improvement across all metrics."
+        "resulting in a consistent ~+3% improvement on evaluation metrics. "
+        "For 70:15:15, the train/val entries come from the best checkpoint selected by val_accuracy."
     )
 
 render_footer()
