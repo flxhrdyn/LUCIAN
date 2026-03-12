@@ -1,0 +1,38 @@
+name: Sync To Hugging Face Space
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  HF_SPACE_URL: https://huggingface.co/spaces/felixhrdyn/LUCIAN
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Validate Hugging Face token
+        run: |
+          if [ -z "${{ secrets.HF_TOKEN }}" ]; then
+            echo "HF_TOKEN is missing. Add it in GitHub Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - name: Configure git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git remote add hf-space "https://felixhrdyn:${HF_TOKEN}@huggingface.co/spaces/felixhrdyn/LUCIAN"
+          git push hf-space HEAD:main
