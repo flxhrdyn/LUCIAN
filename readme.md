@@ -130,6 +130,21 @@ git push hfspace main
 
 HF Spaces reads the `Dockerfile`, builds the image, and serves the app on port 7860.
 
+### Automate GitHub → HuggingFace Sync (recommended)
+
+To keep GitHub as the single source of truth and auto-update your Space on every push:
+
+1. Generate a **Write** access token in Hugging Face: Settings → Access Tokens
+2. In GitHub repo settings, add secret:
+  - Name: `HF_TOKEN`
+  - Value: your Hugging Face write token
+3. Add workflow file: `.github/workflows/sync-to-hf-space.yml`
+4. Push to `main` — GitHub Actions will automatically push the same commit to your Space
+
+Manual trigger is also supported via **Actions → Sync To Hugging Face Space → Run workflow**.
+
+This repository already includes the workflow template for this mechanism.
+
 ### Docker → Azure App Service
 
 ```bash
@@ -154,7 +169,8 @@ az webapp create \
 LUCIAN/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml               # GitHub Actions — install deps + run pytest on push
+│       ├── ci.yml               # GitHub Actions — install deps + run pytest on push
+│       └── sync-to-hf-space.yml # GitHub Actions — auto-sync main branch to HF Space
 ├── .streamlit/
 │   └── config.toml              # Theme & server configuration
 ├── src/
@@ -203,7 +219,7 @@ LUCIAN/
 
 | Component | Technology |
 |-----------|-----------|
-| Deep Learning Framework | TensorFlow 2.19 / Keras |
+| Deep Learning Framework | TensorFlow 2.19 | Keras |
 | Model Architecture | ConvNeXt-Base |
 | Explainability | Grad-CAM |
 | Web Framework | Streamlit 1.45 |
@@ -211,6 +227,7 @@ LUCIAN/
 | Data Processing | NumPy, Pandas |
 | Testing | pytest |
 | CI | GitHub Actions |
+| CD | GitHub Actions (GitHub to HuggingFace Space sync) |
 | Containerization | Docker |
 | Deployment | Streamlit Cloud · HuggingFace Spaces · Azure App Service |
 | Methodology | CRISP-DM |
