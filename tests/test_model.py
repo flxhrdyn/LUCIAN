@@ -96,8 +96,8 @@ class TestPredict:
     @pytest.fixture()
     def mock_model(self):
         model = MagicMock()
-        # Simulate 3-class softmax output
-        model.predict.return_value = np.array([[0.1, 0.8, 0.1]])
+        # Simulate model(x, training=False).numpy() -> softmax output
+        model.return_value.numpy.return_value = np.array([[0.1, 0.8, 0.1]], dtype=np.float32)
         return model
 
     def test_returns_tuple(self, mock_model, fake_img_array):
@@ -120,6 +120,10 @@ class TestPredict:
         _, elapsed = predict(mock_model, fake_img_array)
         assert elapsed >= 0.0
 
-    def test_model_predict_called_once(self, mock_model, fake_img_array):
+    def test_model_called_once_with_inference_mode(self, mock_model, fake_img_array):
         predict(mock_model, fake_img_array)
-        mock_model.predict.assert_called_once_with(fake_img_array, verbose=0)
+        mock_model.assert_called_once()
+        args, kwargs = mock_model.call_args
+        assert len(args) == 1
+        assert tuple(args[0].shape) == fake_img_array.shape
+        assert kwargs == {"training": False}
