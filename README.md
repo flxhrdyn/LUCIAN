@@ -21,6 +21,13 @@ pinned: false
 
 ---
 
+## 🔗 Live Demo
+
+- Streamlit Cloud: https://lucian.streamlit.app
+- Hugging Face Space: https://felixhrdyn-lucian.hf.space
+
+---
+
 ## 🎯 Problem Statement
 
 Lung cancer is one of the leading causes of cancer-related mortality worldwide. Early and accurate classification of histopathological tissue types — Adenocarcinoma (LUAD), Squamous Cell Carcinoma (LUSC), and Benign tissue — is critical for treatment planning. Manual diagnosis by pathologists is time-consuming and prone to inter-observer variability. This project explores using a state-of-the-art CNN to assist in automated classification.
