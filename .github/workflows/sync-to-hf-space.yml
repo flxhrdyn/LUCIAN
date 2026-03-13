@@ -1,4 +1,4 @@
-name: Sync To Hugging Face Space
+name: CD - Sync to Hugging Face Space
 
 on:
   push:

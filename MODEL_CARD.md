@@ -13,7 +13,7 @@ tags:
 model_file: convnext_lung_82.keras
 ---
 
-# ConvNeXt Lung Histopathology Classifier (LUCIAN)
+# ConvNeXt Lung Cancer Histopathology Classifier
 
 This is a **model card** intended to be used as the `README.md` of the Hugging Face model repository:
 
@@ -55,7 +55,7 @@ The model predicts one of the following:
 
 > This model card summarizes the training/evaluation reported by the LUCIAN project.
 
-## Training Procedure (High-level)
+## Training Procedure
 
 - Transfer learning using ConvNeXt-Base pretrained weights.
 - A small classification head is added and the model is fine-tuned.
