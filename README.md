@@ -42,6 +42,7 @@ Lung cancer is one of the leading causes of cancer-related mortality worldwide. 
 - **Input size:** 224 × 224 px
 - **Dataset:** [LC25000 Lung and Colon Histopathology Dataset](https://www.kaggle.com/datasets/andrewmvd/lung-and-colon-cancer-histopathological-images) — 3,000 lung images (3 classes × 1,000 images)
 - **Model hosted on:** [HuggingFace 🤗](https://huggingface.co/felixhrdyn/convnextv1-lung-cancer)
+- **Hugging Face model card (separate):** see [MODEL_CARD.md](MODEL_CARD.md)
 
 ---
 

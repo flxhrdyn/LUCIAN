@@ -60,13 +60,25 @@ def compute_gradcam(
     # Global-average-pool gradients over spatial dims → importance weight per channel
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))  # (C,)
 
-    conv_map = conv_outputs[0]                             # (H, W, C)
-    heatmap  = conv_map @ pooled_grads[..., tf.newaxis]   # (H, W, 1) — channels weighted by gradient magnitude
-    heatmap  = tf.squeeze(heatmap)                        # (H, W)
+    conv_map = conv_outputs[0]  # (H, W, C)
 
-    # ReLU + normalize to [0, 1]
-    heatmap = tf.maximum(heatmap, 0)
-    heatmap = heatmap / (tf.math.reduce_max(heatmap) + 1e-8)  # epsilon guards against blank/uniform images
+    # Channel-weighted combination.
+    # Using a matmul keeps this fast and works for both (7,7,C) and (224,224,C).
+    raw_heatmap = tf.squeeze(conv_map @ pooled_grads[..., tf.newaxis])  # (H, W)
+
+    # Standard Grad-CAM uses ReLU to keep only positive contributions.
+    heatmap = tf.maximum(raw_heatmap, 0)
+
+    # Some models/inputs (especially tiny untrained test models) can yield an all-zero
+    # ReLU heatmap. In that case, fall back to a magnitude-based normalization so the
+    # result is still informative and input-dependent.
+    eps = tf.constant(1e-8, dtype=heatmap.dtype)
+    max_val = tf.reduce_max(heatmap)
+    heatmap = tf.cond(
+        max_val > eps,
+        lambda: heatmap / (max_val + eps),
+        lambda: tf.abs(raw_heatmap) / (tf.reduce_max(tf.abs(raw_heatmap)) + eps),
+    )
     return heatmap.numpy()
 
 
