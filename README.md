@@ -55,7 +55,7 @@ The core of LUCIAN is a transfer learning implementation using the **ConvNeXt-Ba
   - Dense Layer (256 units, ReLU activation)
   - Dropout (30% rate for regularization)
   - Output Layer (3 units, Softmax activation)
-- **Dataset**: LC25000 Lung Histopathology Dataset (3,000 images across 3 classes)
+- **Dataset**: Subset of LC25000 Lung Histopathology Dataset (3,000 images across 3 classes)
 
 ## System Architecture
 
@@ -72,7 +72,7 @@ graph TD
     end
     
     subgraph Deployment_Level [Gateway & Delivery]
-        UI[React/Streamlit Dashboard] -->|User Interaction| API[Internal Logic]
+        UI[Streamlit Dashboard] -->|User Interaction| API[Internal Logic]
         API -->|Fetch Model| HF[Hugging Face Hub]
         CI[GitHub Actions] -->|Sync Deployment| HFS[HF Spaces / Docker]
     end
