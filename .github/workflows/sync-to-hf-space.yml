@@ -56,6 +56,12 @@ jobs:
           git archive --format=tar HEAD | tar -x -C "${SPACE_DIR}"
 
           pushd "${SPACE_DIR}" >/dev/null
+          
+          # Replace GitHub README with HF-specific README
+          if [ -f "README_HF.md" ]; then
+            mv README_HF.md README.md
+          fi
+
           git init -b main
           git lfs install
 

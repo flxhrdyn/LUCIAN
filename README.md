@@ -1,308 +1,144 @@
----
-title: LUCIAN
-emoji: 🫁
-colorFrom: blue
-colorTo: green
-sdk: docker
-app_port: 7860
-pinned: false
----
+<div align="center">
 
-# 🔬 LUCIAN — Lung Carcinoma Histopathology Imaging & Analysis
-
-![CI](https://github.com/flxhrdyn/LUCIAN/actions/workflows/ci.yml/badge.svg)
-![CD](https://github.com/flxhrdyn/LUCIAN/actions/workflows/sync-to-hf-space.yml/badge.svg)
-![Python](https://img.shields.io/badge/Python-3.12.10-blue?logo=python)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.19-orange?logo=tensorflow)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.45-red?logo=streamlit)
-![HuggingFace](https://img.shields.io/badge/HuggingFace-Model-yellow?logo=huggingface)
-![License](https://img.shields.io/badge/License-MIT-green)
-
-**LUCIAN** *(Lung Carcinoma Histopathology Imaging & Analysis)* is an AI-powered web application for classifying lung tissue types from histopathology slides using a fine-tuned **ConvNeXt-Base** model. Developed as an undergraduate thesis applying the **CRISP-DM** methodology, and extended post-thesis with production-grade code structure and deployment-ready architecture.
+  # LUCIAN — Lung Carcinoma Histopathology Imaging & Analysis
+  **Autonomous Tissue Classification, Grad-CAM Explainability, and Intelligence-Driven Cancer Diagnostics.**
+  
+  ![CI](https://github.com/flxhrdyn/LUCIAN/actions/workflows/ci.yml/badge.svg)
+  ![CD](https://github.com/flxhrdyn/LUCIAN/actions/workflows/sync-to-hf-space.yml/badge.svg)
+  ![Python](https://img.shields.io/badge/Python-3.12.10-blue?logo=python)
+  ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.19-orange?logo=tensorflow)
+  ![Streamlit](https://img.shields.io/badge/Streamlit-1.45-red?logo=streamlit)
+  ![HuggingFace](https://img.shields.io/badge/HuggingFace-Model-yellow?logo=huggingface)
+  ![License](https://img.shields.io/badge/License-MIT-green)
+</div>
 
 ---
 
-## 🔗 Live Demo
+## Overview
 
-- Streamlit Cloud: https://lucian.streamlit.app
-- Hugging Face Space: https://felixhrdyn-lucian.hf.space
+Lung cancer remains a leading cause of cancer-related mortality globally. Early and precise classification of tissue types — Adenocarcinoma (LUAD), Squamous Cell Carcinoma (LUSC), and Benign tissue — is fundamental for effective treatment planning. 
+
+**LUCIAN** is a specialized Computer Vision system that automates the analysis of histopathology slides. By leveraging SOTA deep learning architectures and explainability frameworks, this project bridges the gap between raw medical imaging and actionable diagnostic insights.
+
+## Technical Features
+
+- **Advanced Deep Learning**: Powered by a fine-tuned ConvNeXt-Base model, achieving high accuracy on standardized histopathology datasets.
+- **Visual Explainability**: Integrated Gradient-weighted Class Activation Mapping (Grad-CAM) to visualize high-impact regions in tissue slides.
+- **Systematic Methodology**: Developed following the CRISP-DM framework, ensuring a data-driven approach from business understanding to deployment.
+- **Production-Ready CI/CD**: Automated testing (pytest) and deployment pipelines ensuring consistent application updates and reliability.
+- **Flexible Deployment**: Multi-platform support including Docker, Streamlit Cloud, Hugging Face Spaces, and Azure.
+
+## Technology Stack
+
+### Core Intelligence
+- Deep Learning: TensorFlow 2.19, Keras
+- Processing: NumPy, Pandas
+- Explainability: Grad-CAM (OpenCV + TF)
+
+### Web Interface
+- Framework: Streamlit 1.45 (Multi-page Architecture)
+- Styling: Vanilla CSS integration
+- Metrics Visualization: Plotly
+
+### Infrastructure & DevOps
+- Containerization: Docker
+- Version Control & CI/CD: Git, GitHub Actions
+- Model Registry: Hugging Face Hub
+
+## Model Architecture
+
+The core of LUCIAN is a transfer learning implementation using the **ConvNeXt-Base** backbone, pre-trained on ImageNet-1K. The model is optimized for 224 x 224 px histopathology inputs.
+
+- **Base Model**: ConvNeXt-Base (feature extractor)
+- **Classification Head**:
+  - Global Average Pooling
+  - Dense Layer (256 units, ReLU activation)
+  - Dropout (30% rate for regularization)
+  - Output Layer (3 units, Softmax activation)
+- **Dataset**: LC25000 Lung Histopathology Dataset (3,000 images across 3 classes)
+
+## System Architecture
+
+```mermaid
+graph TD
+    subgraph Data_Input [Ingestion Level]
+        Image[Histopathology Slide] -->|Upload| Web[Streamlit UI]
+    end
+    
+    subgraph Intelligence_Level [Intelligence Level]
+        Web -->|Input Tensors| Model[ConvNeXt-Base Engine]
+        Model -->|Gradient Flow| GradCAM[Grad-CAM Visualizer]
+        Model -->|Softmax Out| Result[Class Confidence]
+    end
+    
+    subgraph Deployment_Level [Gateway & Delivery]
+        UI[React/Streamlit Dashboard] -->|User Interaction| API[Internal Logic]
+        API -->|Fetch Model| HF[Hugging Face Hub]
+        CI[GitHub Actions] -->|Sync Deployment| HFS[HF Spaces / Docker]
+    end
+```
 
 ---
 
-## 🎯 Problem Statement
+## Performance & Metrics
 
-Lung cancer is one of the leading causes of cancer-related mortality worldwide. Early and accurate classification of histopathological tissue types — Adenocarcinoma (LUAD), Squamous Cell Carcinoma (LUSC), and Benign tissue — is critical for treatment planning. Manual diagnosis by pathologists is time-consuming and prone to inter-observer variability. This project explores using a state-of-the-art CNN to assist in automated classification.
+LUCIAN was evaluated using multiple data split strategies to ensure robustness and generalization.
 
----
+### Core Metrics (80:10:10 Split)
+| Parameter | Value | Description |
+| :--- | :--- | :--- |
+| **Test Accuracy** | **93.67%** | Final performance on unseen test data |
+| **F1-Score (Macro)** | **93.64%** | Balanced precision and recall indicator |
+| **Precision (Macro)** | **93.63%** | Accuracy of positive predictions |
+| **Recall (Macro)** | **93.67%** | Ability to identify all relevant instances |
 
-## 🧠 Model & Architecture
-
-- **Base model:** [ConvNeXt-Base](https://arxiv.org/abs/2201.03545) pretrained on ImageNet-1K
-- **Approach:** Transfer learning + fine-tuning
-- **Added layers:** Global Average Pooling → Dense (256, ReLU) → Dropout (0.3) → Dense (3, Softmax)
-- **Input size:** 224 × 224 px
-- **Dataset:** [LC25000 Lung and Colon Histopathology Dataset](https://www.kaggle.com/datasets/andrewmvd/lung-and-colon-cancer-histopathological-images) — 3,000 lung images (3 classes × 1,000 images)
-- **Model hosted on:** [HuggingFace 🤗](https://huggingface.co/felixhrdyn/convnextv1-lung-cancer)
-- **Hugging Face model card (separate):** see [MODEL_CARD.md](MODEL_CARD.md)
-
----
-
-## 📊 Model Performance
-
-Two data split experiments were conducted:
-
-| Metric | Split 80:10:10 (Final) | Split 70:15:15 |
-|--------|----------------------|----------------|
-| Train Accuracy | 96.08% | 94.95% |
-| Validation Accuracy | 96.67% | 94.00% |
-| **Test Accuracy** | **93.67%** | **90.44%** |
-| Precision (macro) | 93.63% | 90.47% |
-| Recall (macro) | 93.67% | 90.44% |
-| F1-Score (macro) | 93.64% | 90.39% |
-
-For the 70:15:15 run, values are reported from the **best checkpoint epoch** selected by `ModelCheckpoint(monitor='val_accuracy', mode='max')`.
-
-### Per-Class Performance (80:10:10 Split)
-
-| Class | Precision | Recall | F1-Score | Support |
-|-------|-----------|--------|----------|---------|
-| Adenocarcinoma | 91.75% | 89.00% | 90.36% | 100 |
-| Benign | 98.04% | 100.00% | 99.01% | 100 |
-| Squamous Cell Carcinoma | 91.09% | 92.00% | 91.54% | 100 |
+### Per-Class Performance
+| Class | Precision | Recall | F1-Score |
+| :--- | :--- | :--- | :--- |
+| Adenocarcinoma | 91.75% | 89.00% | 90.36% |
+| Benign Tissue | 98.04% | 100.00% | 99.01% |
+| Squamous Carcinoma | 91.09% | 92.00% | 91.54% |
 
 ---
 
-## 🔥 Grad-CAM Explainability
-
-LUCIAN includes **Gradient-weighted Class Activation Mapping (Grad-CAM)** to visualize which regions of the histopathology image most influenced the model's prediction. Warmer colors (red/yellow) indicate higher importance.
-
-The implementation targets the `flatten` input tensor — the 7×7×1024 feature map immediately after `convnext_base` — which lies in the outer model's symbolic graph, resolving the Keras 3 `KeyError` that occurs when referencing tensors from a nested sub-model's isolated graph. The grad model is cached via `functools.lru_cache` to avoid repeated `tf.function` retracing.
-
----
-
-## 🚀 Getting Started
+## Deployment Guide
 
 ### Prerequisites
 - Python 3.12+
+- Docker (optional for containerized runs)
 
-### Setup Environment
+### Execution Options
 
+**Option 1: Local Development Mode**
 ```bash
-python -m venv myvenv
-myvenv\Scripts\activate   # Windows
-# source myvenv/bin/activate  # macOS/Linux
+# Initialize environment
+python -m venv venv
+source venv/bin/activate  # venv\Scripts\activate on Windows
 pip install -r requirements.txt
-```
 
-### Run Streamlit App
-
-```bash
+# Run Application
 streamlit run app.py
 ```
 
-The app will open at `http://localhost:8501`. The model is loaded from `models/convnext_lung_82.keras`, or automatically downloaded from HuggingFace on first run if not present.
-
-### Run Tests
-
+**Option 2: Docker Deployment**
 ```bash
-python -m pytest tests/ -v
-```
-
----
-
-## 🐳 Deployment
-
-### Streamlit Cloud (recommended for demos)
-
-> Always-on, free tier, zero infrastructure to manage.
-
-1. Fork / push this repo to GitHub
-2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub
-3. Click **New app** → select repo `LUCIAN` → branch `main` → main file `app.py`
-4. Click **Deploy** — Streamlit Cloud auto-detects `requirements.txt` and boots the app
-5. The model is downloaded from HuggingFace on first startup (no model file needed in the repo)
-
-### Docker (local)
-
-```bash
-# Build image (~4 GB with TensorFlow)
+# Build Container
 docker build -t lucian .
 
-# Run container
+# Run Container
 docker run -p 7860:7860 lucian
 ```
 
-Open `http://localhost:7860` in your browser.
+## Configuration
 
-### HuggingFace Spaces (Docker, free)
-
-> Runs the full Docker container — always-on, free tier, no infra to manage.
-
-1. Go to [huggingface.co/new-space](https://huggingface.co/new-space) and sign in
-2. Set **SDK: Docker**, visibility: Public
-3. Sync your code to the Space.
-
-> Note: the Hugging Face Hub rejects **raw binary blobs** pushed via plain Git.
-> Repos that include images (like this one) must use **Xet/LFS-backed storage**.
-> The simplest approach is the GitHub Actions sync described below.
-
-If you still want to push manually, use a “snapshot push” (exports the current
-tracked files and pushes them with Git-LFS enabled, without rewriting your
-GitHub history):
-
-```bash
-SPACE_DIR="$(mktemp -d)"
-git archive --format=tar HEAD | tar -x -C "${SPACE_DIR}"
-
-cd "${SPACE_DIR}"
-git init -b main
-git lfs install
-git lfs track "*.jpg" "*.jpeg" "*.png" "*.gif" "*.webp" "*.bmp"
-
-git add .gitattributes
-git add .
-git commit -m "Deploy snapshot to HF Space"
-
-git remote add hfspace https://felixhrdyn:<HF_TOKEN>@huggingface.co/spaces/felixhrdyn/LUCIAN
-git push --force hfspace main
-```
-
-HF Spaces reads the `Dockerfile`, builds the image, and serves the app on port 7860.
-
-### Automate GitHub → HuggingFace Sync (recommended)
-
-To keep GitHub as the single source of truth and auto-update your Space on every push:
-
-1. Generate a **Write** access token in Hugging Face: Settings → Access Tokens
-2. In GitHub repo settings, add secret:
-  - Name: `HF_TOKEN`
-  - Value: your Hugging Face write token
-3. Add workflow file: `.github/workflows/sync-to-hf-space.yml`
-4. Push to `main` — GitHub Actions will publish a clean “snapshot” repo to your Space (with Git-LFS tracking for binary assets)
-
-Manual trigger is also supported via **Actions → Sync To Hugging Face Space → Run workflow**.
-
-This repository already includes the workflow template for this mechanism.
-
-### Docker → Azure App Service
-
-```bash
-# Push image to Azure Container Registry
-az acr login --name <your-registry>
-docker tag lucian <your-registry>.azurecr.io/lucian:latest
-docker push <your-registry>.azurecr.io/lucian:latest
-
-# Deploy to Azure App Service (Linux, B1+)
-az webapp create \
-  --resource-group <rg> \
-  --plan <plan> \
-  --name lucian-app \
-  --deployment-container-image-name <your-registry>.azurecr.io/lucian:latest
-```
+The application centralizes its constants and model settings within `src/config.py`. Key configurable parameters include:
+- `HF_REPO_ID`: The Hugging Face Hub repository containing the model weights.
+- `IMAGE_SIZE`: Default tensor dimensions (Current: `224x224`).
+- `GRADCAM_LAYER`: Target layer for explainability heatmaps (Current: `flatten`).
 
 ---
 
-## 📁 Project Structure
-
-```
-LUCIAN/
-├── .github/
-│   └── workflows/
-│       ├── ci.yml               # GitHub Actions — install deps + run pytest on push
-│       └── sync-to-hf-space.yml # GitHub Actions — auto-sync main branch to HF Space
-├── .streamlit/
-│   └── config.toml              # Theme & server configuration
-├── src/
-│   ├── __init__.py              # Package version & author
-│   ├── config.py                # Centralized constants (URLs, labels, colors, paths)
-│   ├── gradcam.py               # Grad-CAM computation & heatmap overlay
-│   ├── model.py                 # load_model(), preprocess_image(), predict()
-│   └── styles.py                # CSS, footer, sidebar components
-├── pages/
-│   ├── Home.py                  # Landing page with model status
-│   ├── 1_Classification.py      # Image upload & real-time prediction
-│   ├── 2_Model_Performance.py   # Training metrics, classification report, confusion matrix
-│   └── 3_Lung_Cancer_Info.py    # Clinical background for each cancer type
-├── tests/
-│   ├── conftest.py              # Shared pytest fixtures (fake images, arrays)
-│   ├── test_config.py           # Constants, paths, demo image validation
-│   ├── test_model.py            # preprocess_image (happy path + error cases), predict
-│   └── test_gradcam.py          # overlay_heatmap, compute_gradcam with tiny model
-├── assets/
-│   ├── model_performance_82split/   # Plots & report for 80:10:10 split
-│   ├── model_performance_73split/   # Plots & report for 70:15:15 split
-│   └── lung_cancer_image_demo/      # Sample images per class
-├── notebooks/
-│   ├── 01_training_80_10_10_split.ipynb   # Main training experiment (CRISP-DM)
-│   └── 02_training_70_15_15_split.ipynb   # Baseline experiment
-├── models/                      # Local model artifact cache (convnext_lung_82.keras), gitignored
-├── app.py                       # Streamlit entry point
-├── Dockerfile                   # Container definition for HF Spaces / Azure
-├── .dockerignore                # Excludes venv, model weights, and dev files from image
-├── requirements.txt             # Runtime dependencies
-└── README.md
-```
-
----
-
-## 🖥️ App Features
-
-- **Home** — Landing page with model status and navigation overview
-- **Image Classification** — Upload histopathology images (JPG/PNG) for real-time prediction; displays per-class confidence bars, inference time, and **Grad-CAM heatmap**
-- **Model Performance** — Training curves, classification report, confusion matrix, sample test predictions, and a comparison between the two split strategies
-- **Lung Cancer Info** — Detailed clinical descriptions of each tissue type (LUAD, LUSC, Benign) with academic references
-
----
-
-## 🛠️ Tech Stack
-
-| Component | Technology |
-|-----------|-----------|
-| Deep Learning Framework | TensorFlow 2.19 | Keras |
-| Model Architecture | ConvNeXt-Base |
-| Explainability | Grad-CAM |
-| Web Framework | Streamlit 1.45 |
-| Model Hosting | HuggingFace Hub |
-| Data Processing | NumPy, Pandas |
-| Testing | pytest |
-| CI | GitHub Actions |
-| CD | GitHub Actions (GitHub to HuggingFace Space sync) |
-| Containerization | Docker |
-| Deployment | Streamlit Cloud · HuggingFace Spaces · Azure App Service |
-| Methodology | CRISP-DM |
-
----
-
-## ⚠️ Limitations
-
-- **Small dataset** — trained on 3,000 images (1,000 per class); performance may degrade on out-of-distribution staining protocols or scanner types
-- **Single institution** — LC25000 originates from one source; no external validation has been performed
-- **Not clinically validated** — this tool is for research and educational purposes only and has not undergone clinical trials or regulatory review
-- **3-class scope** — does not cover other lung cancer subtypes (e.g., large cell carcinoma, small cell carcinoma)
-
----
-
-## 🔭 Future Work
-
-- [ ] **Test-Time Augmentation (TTA)** — average predictions over flipped/rotated variants to improve robustness
-- [ ] **ONNX export** — convert model for faster, framework-agnostic inference
-- [x] **Docker deployment** — containerized with `python:3.12-slim`; supports local `docker run` and Azure App Service via ACR
-- [ ] **External dataset validation** — evaluate on TCGA or other public lung pathology datasets
-- [ ] **Attention map alternatives** — explore GradCAM++, ScoreCAM for sharper localization
-
----
-
-## 📚 References
-
-- Liu, Z., et al. (2022). *A ConvNet for the 2020s*. CVPR. [arXiv:2201.03545](https://arxiv.org/abs/2201.03545)
-- Borkowski, A.A., et al. (2019). *Lung and Colon Cancer Histopathological Image Dataset (LC25000)*. [arXiv:1912.12378](https://arxiv.org/abs/1912.12378)
-- Selvaraju, R.R., et al. (2017). *Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization*. ICCV. [arXiv:1610.02391](https://arxiv.org/abs/1610.02391)
-- Succony, L., et al. (2021). *Adenocarcinoma spectrum lesions of the lung*. Cancer Treatment Reviews, 99, 102237.
-- Berezowska, S., et al. (2024). *Pulmonary squamous cell carcinoma*. Histopathology, 84(1), 32–49.
-
----
-
-## 👤 Author
+## Author
 
 **Felix Hardyan**
 - HuggingFace: [felixhrdyn](https://huggingface.co/felixhrdyn)
